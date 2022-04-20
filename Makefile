@@ -31,7 +31,7 @@ $(VENV)/bin/activate: requirements.txt
 
 .PHONY: docker-build
 docker-build: ## Build main image
-	docker build -t $(IMAGE) $(IMAGE_LATEST) .
+	docker build -t $(IMAGE) -t $(IMAGE_LATEST) .
 	#docker build -t $(IMAGE) -t $(IMAGE_LATEST) .
 
 .PHONY: publish
