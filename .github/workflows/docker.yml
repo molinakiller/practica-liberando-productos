@@ -1,9 +1,13 @@
 name: docker
 on:
+  pull_request:
+    branches:
+      - '*'
   push:
     tags:
-      - 'v*'
-    
+      - 'v*' 
+    branches:
+      - '*'    
 jobs:
   release:
     runs-on: ubuntu-latest
