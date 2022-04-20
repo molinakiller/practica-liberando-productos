@@ -6,7 +6,7 @@ PIP		= $(VENV)/bin/pip
 IMAGE_REGISTRY	?= ghcr.io
 IMAGE_REPO		= molinakiller
 IMAGE_NAME		?= practica-liberando-productos
-VERSION			?= develop
+VERSION			?= dev
 
 # Variables used to configure docker images registries to build and push
 IMAGE			= $(IMAGE_REGISTRY)/$(IMAGE_REPO)/$(IMAGE_NAME):$(VERSION)
@@ -31,10 +31,10 @@ $(VENV)/bin/activate: requirements.txt
 
 .PHONY: docker-build
 docker-build: ## Build main image
-	docker build -t $(IMAGE) .
-	#docker build -t $(IMAGE) -t $(IMAGE_LATEST) .
+	#docker build -t $(IMAGE) .
+	docker build -t $(IMAGE) -t $(IMAGE_LATEST) .
 
 .PHONY: publish
 publish: docker-build ## Publish main image
 	docker push $(IMAGE)
-	#docker push $(IMAGE_LATEST)
+	docker push $(IMAGE_LATEST)
