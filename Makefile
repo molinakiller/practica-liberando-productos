@@ -31,10 +31,10 @@ $(VENV)/bin/activate: requirements.txt
 
 .PHONY: docker-build
 docker-build: ## Build main image
-	docker build -t $(IMAGE) -t $(IMAGE_LATEST) .
+	docker build -t $(IMAGE) .
 	#docker build -t $(IMAGE) -t $(IMAGE_LATEST) .
 
 .PHONY: publish
 publish: docker-build ## Publish main image
 	docker push $(IMAGE)
-	docker push $(IMAGE_LATEST)
+	#docker push $(IMAGE_LATEST)
