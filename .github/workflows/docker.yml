@@ -25,7 +25,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Docker Login in GHCR
+      - name: Docker Login in GHCR (git registry)
         uses: docker/login-action@v1
         id: configure-login-ghcr
         with:
