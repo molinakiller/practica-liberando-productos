@@ -1,13 +1,18 @@
 name: docker
+
 on:
-  pull_request:
-    branches:
-      - '*'
   push:
     tags:
-      - 'v*' 
-    branches:
-      - '*'    
+      - 'v*'
+#on:
+  #pull_request:
+    #branches:
+     # - '*'
+  #push:
+   # tags:
+    #  - 'v*' 
+    #branches:
+     # - '*'    
 jobs:
   release:
     runs-on: ubuntu-latest
