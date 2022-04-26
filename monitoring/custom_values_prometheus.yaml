@@ -130,7 +130,7 @@ additionalPrometheusRulesMap:
       - name: ruleset_1
         rules:
           - alert: pythonAppConsumingMoreThanRequest
-            expr: avg(container_memory_usage_bytes{container="python-endpoint"}) by (pod) > avg(kube_pod_container_resource_requests{resource="memory",container="python-endpoint"}) by (pod)
+            expr: avg(container_memory_usage_bytes{container="fast-api-webapp"}) by (pod) > avg(kube_pod_container_resource_requests{resource="memory",container="fast-api-webapp"}) by (pod)
             for: 0m
             labels:
               severity: critical
