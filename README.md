@@ -159,22 +159,38 @@ With this URL you must configure the file "custom_values_prometheus.yaml" adding
 3) heml
 
 #### Steps
-1) Create the Kubernetes kluster  using the following command of minikube:
+1) Create the Kubernetes kluster using the following command of minikube:
+
+```
 minikube start --kubernetes-version='v1.21.1' \
     --memory=4096 \
     -p monitoring-demo
-2) Añadir el repositorio de helm prometheus-community para poder desplegar el chart kube-prometheus-stack:
+```
+2) Add helm repo prometheus-community to deploy the chart kube-prometheus-stack:
 
+```
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
+```
 
 3) Desplegar el chart kube-prometheus-stack del repositorio de helm añadido en el paso anterior con los valores configurados en el archivo custom_values_prometheus.yaml en el namespace monitoring:
+```
+cd monitoring
 helm -n monitoring upgrade --install prometheus prometheus-community/kube-prometheus-stack -f custom_values_prometheus.yaml --create-namespace --wait --version 34.1.1
+```
+4) Install metrics-server in minikube trought addon activation:
 
+```
+minikube addons enable metrics-server -p monitoring-demo
+```
+5) Install python app helm
 
-
-
+```
+cd ..
 helm -n fast-api upgrade my-app --install --create-namespace python-monitoring/
+```
+It must show the following
+```
 Release "my-app" does not exist. Installing it now.
 NAME: my-app
 LAST DEPLOYED: Mon Apr 25 19:59:58 2022
@@ -187,11 +203,11 @@ NOTES:
   export CONTAINER_PORT=$(kubectl get pod --namespace fast-api $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl --namespace fast-api port-forward $POD_NAME 8080:$CONTAINER_PORT
-
-
- helm uninstall my-app -n fast-api
-
-
+```
+To delete the helm
+```
+helm uninstall my-app -n fast-api
+```
 
 ### Alert manager configuration
 
