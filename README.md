@@ -178,6 +178,11 @@ helm repo update
 cd monitoring
 helm -n monitoring upgrade --install prometheus prometheus-community/kube-prometheus-stack -f custom_values_prometheus.yaml --create-namespace --wait --version 34.1.1
 ```
+To see the pods: 
+```
+kubectl --namespace monitoring get pods -l "release=prometheus"
+```
+
 4) Install metrics-server in minikube trought addon activation:
 
 ```
@@ -204,11 +209,75 @@ NOTES:
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl --namespace fast-api port-forward $POD_NAME 8080:$CONTAINER_PORT
 ```
+To get prometheus web interface, we must do a portforward
+```
+kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
+```
+
 To delete the helm
 ```
+helm list -n monitoring
 helm uninstall my-app -n fast-api
 ```
 
 ### Alert manager configuration
 
+For configure Alert manager we must go to monitoring and add the chanel and webhook.
+When we did all the steps slack must advise us like that:
+
+```
+[FIRING:2] Monitoring Event Notification
+Alert: PrometheusRuleFailures - critical
+ Description:
+ Graph: :gráfico_con_tendencia_ascendente: Runbook: :cuaderno_de_espiral:
+ Details:
+  • alertname: PrometheusRuleFailures
+  • container: prometheus
+  • endpoint: http-web
+  • instance: 172.17.0.7:9090
+  • job: prometheus-kube-prometheus-prometheus
+  • namespace: monitoring
+  • pod: prometheus-prometheus-kube-prometheus-prometheus-0
+  • prometheus: monitoring/prometheus-kube-prometheus-prometheus
+  • rule_group: /etc/prometheus/rules/prometheus-prometheus-kube-prometheus-prometheus-rulefiles-0/monitoring-prometheus-kube-prometheus-kubelet.rules-44f1056b-cf89-41c5-9e75-2bcc767b4d26.yaml;kubelet.rules
+  • service: prometheus-kube-prometheus-prometheus
+  • severity: critical
+ 
+ Alert: PrometheusRuleFailures - critical
+ Description:
+ Graph: :gráfico_con_tendencia_ascendente: Runbook: :cuaderno_de_espiral:
+ Details:
+  • alertname: PrometheusRuleFailures
+  • container: prometheus
+  • endpoint: http-web
+  • instance: 172.17.0.7:9090
+  • job: prometheus-kube-prometheus-prometheus
+  • namespace: monitoring
+  • pod: prometheus-prometheus-kube-prometheus-prometheus-0
+  • prometheus: monitoring/prometheus-kube-prometheus-prometheus
+  • rule_group: /etc/prometheus/rules/prometheus-prometheus-kube-prometheus-prometheus-rulefiles-0/monitoring-prometheus-kube-prometheus-kubernetes-system-kubelet-639735c3-303e-43c3-af8a-8e5e243eb32c.yaml;kubernetes-system-kubelet
+  • service: prometheus-kube-prometheus-prometheus
+  • severity: critical
+
+  ---
+
+  [RESOLVED] Monitoring Event Notification
+  Alert: InfoInhibitor - none
+ Description:
+ Graph: :gráfico_con_tendencia_ascendente: Runbook: :cuaderno_de_espiral:
+ Details:
+  • alertname: InfoInhibitor
+  • alertstate: pending
+  • container: config-reloader
+  • namespace: monitoring
+  • pod: prometheus-prometheus-kube-prometheus-prometheus-0
+  • prometheus: monitoring/prometheus-kube-prometheus-prometheus
+  • severity: none
+```
+
 ### Grafana dashboard
+
+To login on grafana, we must do a portforward
+```
+kubectl -n monitoring port-forward svc/prometheus-grafana 3000:80
+```
