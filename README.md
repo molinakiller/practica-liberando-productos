@@ -10,12 +10,13 @@ For deploy a the Bye endpoint we must add these code in python on /src/applicati
         """Implement health check endpoint"""
         # Increment counter used for register the total number of calls in the webserver
         REQUESTS.inc()
-        # Increment counter used for register the requests to healtcheck endpoint
+        # Increment counter used for register the requests to bye endpoint
         BYE_ENDPOINT_REQUESTS.inc()
         return {"msg": "Bye Bye"} 
 ```
 
-Then we have to create the counter for Prometheus, adding this code line.
+Then we have to create the counter for Prometheus, adding this code line on the top of file.
+This line its for say to prometheus that it must take a counter every time that endpoint were visited.
 
 ```python
 BYE_ENDPOINT_REQUESTS = Counter('bye_requests_total', 'Total number of requests to main endpoint')
@@ -23,7 +24,8 @@ BYE_ENDPOINT_REQUESTS = Counter('bye_requests_total', 'Total number of requests 
 
 ### Unit test for endpoint bye bye
 
-We must create the unit test for the new endpoint. We must add these code in python on /src/tests/app_test.py file.
+We must create the unit test for the new bye endpoint. We must add these code in python on /src/tests/app_test.py file.
+Just for be sure that when we visit /bye endpoint it response '{"msg": "Bye Bye"}'
 
 ```python
     @pytest.mark.asyncio
@@ -144,6 +146,8 @@ git tag -a v0.0.1 -m "publish version v0.0.1"
 git push origin --tags
 ```
 
+Every time we increase the version, we must change in the /python-monitoring/values.yaml file.
+
 ### Create Slack chanel and configure Webhook
 
 First of all you will need login in Slack, create a chanel and then install the App "Incoming Webhoks"
@@ -154,31 +158,34 @@ With this URL you must configure the file "custom_values_prometheus.yaml" adding
 
 #### Requirements
 
-1) Minikube
-2) Kubectl
-3) heml
+We will deploy a prometheus and grafana stack to monitoring the web app in python.
+
+1) [Minikube](https://minikube.sigs.k8s.io/docs/start/)
+2) [Kubectl](https://kubernetes.io/docs/tasks/tools/)
+3) [heml](https://helm.sh/docs/intro/install/)
 
 #### Steps
-1) Create the Kubernetes kluster using the following command of minikube:
+1) Create the Kubernetes kluster using the following command of minikube with 4GB of memory:
 
 ```bash
 minikube start --kubernetes-version='v1.21.1' \
     --memory=4096 \
     -p monitoring-demo
 ```
-2) Add helm repo prometheus-community to deploy the chart kube-prometheus-stack:
+2) Add helm repo prometheus-community, to deploy the kube-prometheus-stack chart:
 
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 ```
 
-3) Desplegar el chart kube-prometheus-stack del repositorio de helm añadido en el paso anterior con los valores configurados en el archivo custom_values_prometheus.yaml en el namespace monitoring:
+3) Deploy the kube-prometheus-stack chart trought main repository of helm. We will use the /monitoring/custom_values_prometheus.yaml  file from this repository.
+Firts of all you must add the webhook of slack that you add in the last step, and put in the line 109.
 ```bash
 cd monitoring
 helm -n monitoring upgrade --install prometheus prometheus-community/kube-prometheus-stack -f custom_values_prometheus.yaml --create-namespace --wait --version 34.1.1
 ```
-To see the pods: 
+To see the pods created: 
 ```bash
 kubectl --namespace monitoring get pods -l "release=prometheus"
 ```

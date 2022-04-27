@@ -8,7 +8,7 @@ from hypercorn.config import Config as HyperCornConfig
 from prometheus_client import Counter
 
 app = FastAPI()
-
+#configure the promtheus metrics
 REQUESTS = Counter('server_requests_total', 'Total number of requests to this webserver')
 HEALTHCHECK_REQUESTS = Counter('healthcheck_requests_total', 'Total number of requests to healthcheck')
 MAIN_ENDPOINT_REQUESTS = Counter('main_requests_total', 'Total number of requests to main endpoint')
@@ -44,7 +44,7 @@ class SimpleServer:
         """Implement health check endpoint"""
         # Increment counter used for register the total number of calls in the webserver
         REQUESTS.inc()
-        # Increment counter used for register the requests to healtcheck endpoint
+        # Increment counter used for register the requests to bye endpoint
         BYE_ENDPOINT_REQUESTS.inc()
         return {"msg": "Bye Bye"}    
 

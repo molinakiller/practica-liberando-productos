@@ -7,15 +7,15 @@ import asyncio
 from prometheus_client import start_http_server
 from application.app import SimpleServer
 
-
+#start the main container server
 class Container:
     """
     Class Container configure necessary methods for launch application
     """
-
+    #init the main funtion to deploy the server
     def __init__(self):
         self._simple_server = SimpleServer()
-
+    #init the main funtion to deploy the server
     async def start_server(self):
         """Function for start server"""
         await self._simple_server.run_server()
