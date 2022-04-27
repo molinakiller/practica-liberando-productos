@@ -139,7 +139,7 @@ jobs:
 ```
 The final step its push the tag:
 
-```
+```bash
 git tag -a v0.0.1 -m "publish version v0.0.1"
 git push origin --tags
 ```
@@ -161,25 +161,25 @@ With this URL you must configure the file "custom_values_prometheus.yaml" adding
 #### Steps
 1) Create the Kubernetes kluster using the following command of minikube:
 
-```
+```bash
 minikube start --kubernetes-version='v1.21.1' \
     --memory=4096 \
     -p monitoring-demo
 ```
 2) Add helm repo prometheus-community to deploy the chart kube-prometheus-stack:
 
-```
+```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 ```
 
 3) Desplegar el chart kube-prometheus-stack del repositorio de helm añadido en el paso anterior con los valores configurados en el archivo custom_values_prometheus.yaml en el namespace monitoring:
-```
+```bash
 cd monitoring
 helm -n monitoring upgrade --install prometheus prometheus-community/kube-prometheus-stack -f custom_values_prometheus.yaml --create-namespace --wait --version 34.1.1
 ```
 To see the pods: 
-```
+```bash
 kubectl --namespace monitoring get pods -l "release=prometheus"
 ```
 
@@ -190,12 +190,12 @@ minikube addons enable metrics-server -p monitoring-demo
 ```
 5) Install python app helm
 
-```
+```bash
 cd ..
 helm -n fast-api upgrade my-app --install --create-namespace python-monitoring/
 ```
 It must show the following
-```
+```bash
 Release "my-app" does not exist. Installing it now.
 NAME: my-app
 LAST DEPLOYED: Mon Apr 25 19:59:58 2022
@@ -210,12 +210,12 @@ NOTES:
   kubectl --namespace fast-api port-forward $POD_NAME 8080:$CONTAINER_PORT
 ```
 To get prometheus web interface, we must do a portforward
-```
+```bash
 kubectl -n monitoring port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
 ```
 
 To delete the helm
-```
+```bash
 helm list -n monitoring
 helm uninstall my-app -n fast-api
 ```
@@ -225,7 +225,7 @@ helm uninstall my-app -n fast-api
 For configure Alert manager we must go to monitoring and add the chanel and webhook.
 When we did all the steps slack must advise us like that:
 
-```
+```bash
 [FIRING:2] Monitoring Event Notification
 Alert: PrometheusRuleFailures - critical
  Description:
@@ -278,18 +278,18 @@ Alert: PrometheusRuleFailures - critical
 
 We must login to the python deployment, we could use this command:
 
-```
+```bash
 export POD_NAME=$(kubectl get pods --namespace fast-api -l "app.kubernetes.io/name=fast-api-webapp,app.kubernetes.io/instance=my-app" -o jsonpath="{.items[0].metadata.name}")
 kubectl -n fast-api exec --stdin --tty $POD_NAME -- /bin/sh
 ```
 OR
-```
+```bash
 kubectl get all -n fast-api
 kubectl exec -it POD-NAME -n fast-api /bin/sh
 ```
 
 Then we must install a github project that contains the estress funcionality, git the followings command:
-```
+```bash
 apk update && apk add git go
 git clone https://github.com/jaeg/NodeWrecker.git
 cd NodeWrecker
@@ -301,7 +301,7 @@ go build -o extress main.go
 ### Grafana dashboard
 
 To login on grafana, we must do a portforward
-```
+```bash
 kubectl -n monitoring port-forward svc/prometheus-grafana 3000:80
 ```
 We must go to http://localhost:3000 on browser, the credentials by default its admin for user and prom-operator for password.
@@ -314,5 +314,9 @@ When you import properly the dashboard you must going to settings of dashboard,
 then add the variables that we are using on the custom file.
 
 Dashboard Settings  > Variables > (it will be 2 variables) You must click on each and disable the following:
+
 1)Multi-value
 2)Include All option
+
+It will be show something like this
+![Image text](https://github.com/molinakiller/practica-liberando-productos/blob/main/grafana.png)
