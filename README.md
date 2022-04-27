@@ -315,8 +315,8 @@ then add the variables that we are using on the custom file.
 
 Dashboard Settings  > Variables > (it will be 2 variables) You must click on each and disable the following:
 
-1)Multi-value
-2)Include All option
+1) Multi-value
+2) Include All option
 
 It will be show something like this
 ![Image text](https://github.com/molinakiller/practica-liberando-productos/blob/main/grafana.png)
