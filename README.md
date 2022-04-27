@@ -274,6 +274,29 @@ Alert: PrometheusRuleFailures - critical
   • prometheus: monitoring/prometheus-kube-prometheus-prometheus
   • severity: none
 ```
+### Stress test 
+
+We must login to the python deployment, we could use this command:
+
+```
+export POD_NAME=$(kubectl get pods --namespace fast-api -l "app.kubernetes.io/name=fast-api-webapp,app.kubernetes.io/instance=my-app" -o jsonpath="{.items[0].metadata.name}")
+kubectl -n fast-api exec --stdin --tty $POD_NAME -- /bin/sh
+```
+OR
+```
+kubectl get all -n fast-api
+kubectl exec -it POD-NAME -n fast-api /bin/sh
+```
+
+Then we must install a github project that contains the estress funcionality, git the followings command:
+```
+apk update && apk add git go
+git clone https://github.com/jaeg/NodeWrecker.git
+cd NodeWrecker
+go build -o extress main.go
+./extress -abuse-memory -escalate -max-duration 10000000
+```
+
 
 ### Grafana dashboard
 
@@ -281,3 +304,15 @@ To login on grafana, we must do a portforward
 ```
 kubectl -n monitoring port-forward svc/prometheus-grafana 3000:80
 ```
+We must go to http://localhost:3000 on browser, the credentials by default its admin for user and prom-operator for password.
+
+Then you have to download or copy the custom-dashboard-grafana.yaml file of repo.
+
+In the left menu you must choose the (+) > Import > Import from json.
+
+When you import properly the dashboard you must going to settings of dashboard,
+then add the variables that we are using on the custom file.
+
+Dashboard Settings  > Variables > (it will be 2 variables) You must click on each and disable the following:
+1)Multi-value
+2)Include All option

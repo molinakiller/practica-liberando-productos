@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: molinakiller/python-endpoint
+  repository: ghcr.io/molinakiller/practica-liberando-productos
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.0.1"
+  tag: "0.0.2"
 
 #imagePullSecrets created to use Docker Hub Private Account
 #imagePullSecrets:
